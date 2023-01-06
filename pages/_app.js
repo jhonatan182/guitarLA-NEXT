@@ -3,59 +3,69 @@ import '../styles/globals.css';
 import { toast } from 'react-toastify';
 
 function MyApp({ Component, pageProps }) {
-    const [carrito, setCarrito] = useState([]);
+    //solucion al localstorage con next  react 18
+    const carritoLS =
+        typeof window !== 'undefined'
+            ? JSON.parse(localStorage.getItem('carrito')) ?? []
+            : [];
 
+    //state
+    const [carrito, setCarrito] = useState(carritoLS);
+    const [paginaLista, setPaginaLista] = useState(false);
+
+    //solucionando el error de la hidratracion
     useEffect(() => {
-        const carritoLS = JSON.parse(localStorage.getItem('carrito')) ?? [];
-
-        setCarrito(carritoLS);
+        setPaginaLista(true);
     }, []);
 
-    const agregarCarrito = (guitarra) => {
+    //actualizar LS cada que carrito cambie
+    useEffect(() => {
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+    }, [carrito]);
+
+    const agregarCarrito = (producto) => {
+        //verificar si un producto ya existe en el carrito
         if (
-            carrito?.some((guitarraState) => guitarraState.id === guitarra.id)
+            carrito?.some((productoState) => productoState.id === producto.id)
         ) {
-            const carritoActualizado = carrito.map((guitarraState) => {
-                if (guitarraState.id === guitarra.id) {
-                    guitarraState.cantidad = guitarra.cantidad;
+            const carritoActualizado = carrito.map((productoState) => {
+                if (productoState.id === producto.id) {
+                    productoState.cantidad = producto.cantidad;
                 }
-                return guitarraState;
+                return productoState;
             });
 
             setCarrito(carritoActualizado);
             toast.success('Cambios guardados correctamente');
-            localStorage.setItem('carrito', JSON.stringify(carrito));
         } else {
-            setCarrito([...carrito, guitarra]);
+            setCarrito([...carrito, producto]);
             toast.success('Agregado al carrito');
-            localStorage.setItem('carrito', JSON.stringify(carrito));
         }
     };
 
-    const actualizarCantidad = (guitarra) => {
-        const carritoActualizado = carrito?.map((guitarraState) => {
-            if (guitarraState.id === guitarra.id) {
-                guitarraState.cantidad = guitarra.cantidad;
+    const actualizarCantidad = (producto) => {
+        const carritoActualizado = carrito?.map((productoState) => {
+            if (productoState.id === producto.id) {
+                productoState.cantidad = producto.cantidad;
             }
-            return guitarraState;
+            return productoState;
         });
 
         setCarrito(carritoActualizado);
         toast.success('Cambios guardados correctamente');
-        localStorage.setItem('carrito', JSON.stringify(carrito));
     };
 
     const eliminarGuitarra = (id) => {
         const carritoActualizado = carrito?.filter(
-            (guitarraState) => guitarraState.id !== id
+            (productoState) => productoState.id !== id
         );
 
         setCarrito(carritoActualizado);
-        toast.success('Guitarra eliminada de tu carrito');
-        localStorage.setItem('carrito', JSON.stringify(carrito));
+        toast.success('Producto eliminado de tu carrito');
     };
 
-    return (
+    //aqui usando el state de pagina lista
+    return paginaLista ? (
         <Component
             {...pageProps}
             agregarCarrito={agregarCarrito}
@@ -63,7 +73,7 @@ function MyApp({ Component, pageProps }) {
             actualizarCantidad={actualizarCantidad}
             eliminarGuitarra={eliminarGuitarra}
         />
-    );
+    ) : null;
 }
 
 export default MyApp;

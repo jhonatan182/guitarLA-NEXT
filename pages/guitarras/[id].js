@@ -21,7 +21,7 @@ export default function Guitarra({ guitarra, agregarCarrito }) {
 
         //construir un objeto
         const guitarraAlmacenada = {
-            id: guitarra[0].id,
+            id: guitarra[0].attributes.url,
             imagen: imagen.data.attributes.url,
             cantidad,
             nombre,

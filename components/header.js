@@ -30,6 +30,28 @@ export default function Header() {
                             Inicio
                         </a>
                     </Link>
+                    <Link href="/tienda">
+                        <a
+                            className={
+                                router.pathname === '/tienda'
+                                    ? styles.active
+                                    : ''
+                            }
+                        >
+                            Guitarras
+                        </a>
+                    </Link>
+                    <Link href="/disquera">
+                        <a
+                            className={
+                                router.pathname === '/disquera'
+                                    ? styles.active
+                                    : ''
+                            }
+                        >
+                            Discos
+                        </a>
+                    </Link>
                     <Link href="/nosotros">
                         <a
                             className={
@@ -41,17 +63,7 @@ export default function Header() {
                             Nosotros
                         </a>
                     </Link>
-                    <Link href="/tienda">
-                        <a
-                            className={
-                                router.pathname === '/tienda'
-                                    ? styles.active
-                                    : ''
-                            }
-                        >
-                            Tienda
-                        </a>
-                    </Link>
+
                     <Link href="/blog">
                         <a
                             className={
